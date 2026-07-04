@@ -53,7 +53,7 @@ jobs:
           echo "硬盘数量：$(ls /dev/sd* | grep -v [1-9] | wc -l)" && df -hT
 
       - name: Free Disk Space (Ubuntu)
-        uses: insightsengineering/disk-space-reclaimer@v1.1.2
+        uses: jlumbroso/free-disk-space@v1.3.1
         with:
           android: false
           dotnet: false
@@ -61,7 +61,7 @@ jobs:
           large-packages: false
           swap-storage: false
           docker-images: false
-          tools-cache: true
+          tool-cache: true
 
       - name: Initialization environment
         env:
@@ -123,8 +123,7 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
 
-      - name: Download package
-        id: package
+      - name: Download DL Package(下载DL软件包)
         run: |
           cd openwrt
           make defconfig
@@ -132,7 +131,7 @@ jobs:
           find dl -size -1024c -exec ls -l {} \;
           find dl -size -1024c -exec rm -f {} \;
 
-      - name: Compile the firmware
+      - name: Compile Firmware(开始编译固件)
         id: compile
         run: |
           cd openwrt
