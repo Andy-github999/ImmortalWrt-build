@@ -43,24 +43,17 @@ jobs:
           echo "硬盘数量：$(ls /dev/sd* | grep -v [1-9] | wc -l)" && df -hT
 
       # 必须最先：扩容磁盘（修复关键问题）
-      - name: Combine Disks(合并磁盘)
+      - name: Combine Disks and Cleanup
         uses: easimon/maximize-build-space@master
         with:
           swap-size-mb: 1024
           temp-reserve-mb: 100
           root-reserve-mb: 1024
-
-      # 清理理系统空间
-      - name: Free Disk Space (Ubuntu)
-        uses: jlumbroso/free-disk-space@v1.3.1
-        with:
-          android: true
-          dotnet: true
-          haskell: true
-          large-packages: true
-          swap-storage: true
-          docker-images: true
-          tool-cache: true
+          remove-dotnet: 'true'
+          remove-android: 'true'
+          remove-haskell: 'true'
+          remove-codeql: 'true'
+          remove-docker-images: 'true'
 
       - name: Check Server Performance(检查服务器性能)
         run: |
