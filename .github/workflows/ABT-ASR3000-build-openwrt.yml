@@ -52,16 +52,25 @@ jobs:
         echo "--------------------------硬盘信息--------------------------"
         echo "硬盘数量：$(ls /dev/sd* | grep -v [1-9] | wc -l)" && df -hT
 
-    - name: Free Disk Space (Ubuntu)
-      uses: jlumbroso/free-disk-space@v1.3.1
+    # 必须最先：扩容磁盘（修复关键问题）
+    - name: Combine Disks and Cleanup
+      uses: easimon/maximize-build-space@master
       with:
-        android: true
-        dotnet: true
-        haskell: true
-        large-packages: false
-        swap-storage: true
-        docker-images: true
-        tool-cache: true
+        swap-size-mb: 1024
+        temp-reserve-mb: 100
+        root-reserve-mb: 1024
+        remove-dotnet: 'true'
+        remove-android: 'true'
+        remove-haskell: 'true'
+        remove-codeql: 'true'
+        remove-docker-images: 'true'
+
+    - name: Check Server Performance(检查服务器性能)
+      run: |
+        echo "CPU/内存/磁盘信息"
+        nproc
+        df -h
+        free -h
 
     - name: Initialization environment
       env:
@@ -78,12 +87,6 @@ jobs:
         sudo mkdir -p /workdir
         sudo chown $USER:$GROUPS /workdir
 
-    - name: Combine Disks(合并磁盘)
-      uses: easimon/maximize-build-space@master
-      with:
-        swap-size-mb: 1024
-        temp-reserve-mb: 100
-        root-reserve-mb: 1024
 
     - name: Checkout
       uses: actions/checkout@main
